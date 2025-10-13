@@ -1,4 +1,10 @@
 package dev.Fjc.skills.skill.subskills;
 
-public class Excavator {
+import dev.Fjc.skills.skill.Mining;
+import org.bukkit.event.Listener;
+
+public class Excavator extends Mining implements Listener {
+
+
+
 }
