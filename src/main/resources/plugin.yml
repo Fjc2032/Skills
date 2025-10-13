@@ -1,0 +1,8 @@
+name: Skills
+version: '0.1-b'
+main: dev.Fjc.skills.Skills
+api-version: '1.21'
+prefix: Skills
+load: STARTUP
+authors: [ Fjc ]
+description: Allows a player to specialize in skills.
