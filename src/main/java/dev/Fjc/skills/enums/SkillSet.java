@@ -2,8 +2,22 @@ package dev.Fjc.skills.enums;
 
 public enum SkillSet {
 
-    MINING,
+    MINING("mining"),
     BUILDING,
     GUARD,
-    CRAFTSMAN
+    CRAFTSMAN;
+
+    private String skill;
+
+    SkillSet() {
+        this.skill = null;
+    }
+
+    SkillSet(String skill) {
+        this.skill = skill;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
 }

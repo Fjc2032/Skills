@@ -17,25 +17,9 @@ public class PlayerManager {
 
     private static Map<UUID, SkillSet> playerMap = new ConcurrentHashMap<>();
 
-    private static Map<Map<UUID, SkillSet>, Double> skillLevel = new ConcurrentHashMap<>();
+    private static Map<Map<UUID, SkillSet>, Double> skillLevel = new ConcurrentHashMap<>(Short.MAX_VALUE);
 
-    public static double miningScore;
-    public static double buildingScore;
-    public static double guardScore;
-
-    public PlayerManager getManager() {
-        return PlayerManager.this;
-    }
-
-    public static Map<UUID, SkillSet> getPlayerMap() {
-        return playerMap;
-    }
-
-    public static double getMiningScore() {
-        return miningScore;
-    }
-
-    public void setMiningScore(double score) {
-        miningScore = score;
+    public static Map<Map<UUID, SkillSet>, Double> skillMap() {
+        return skillLevel;
     }
 }
