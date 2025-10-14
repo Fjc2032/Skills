@@ -15,6 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
+/**
+ * Represents the Explosive Technician skill, under the main skill Mining
+ * <p></p>
+ * Abilities: <br>
+ * TNT Tactics Ability - right click with a pickaxe in hand to blow up an area. <br>
+ * Demolition Fury Ability - Blasts through multiple blocks at once (for a very brief time period).
+ */
 public class ExplosivesTech extends Mining {
 
     private final Skills plugin;
@@ -38,6 +45,7 @@ public class ExplosivesTech extends Mining {
 
         if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (target == null) return;
+        if (!pickaxes.contains(player.getInventory().getItemInMainHand().getType())) return;
         world.spawn(target, TNTPrimed.class);
     }
 

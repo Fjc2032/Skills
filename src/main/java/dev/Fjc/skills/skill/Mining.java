@@ -4,6 +4,7 @@ import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.player.SkillController;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -66,6 +67,18 @@ public class Mining extends SkillController {
 
         return blocks;
     }
+
+    /**
+     * Unmodifiable list of all pickaxes
+     */
+    protected List<Material> pickaxes = List.of(
+            Material.WOODEN_PICKAXE,
+            Material.STONE_PICKAXE,
+            Material.IRON_PICKAXE,
+            Material.GOLDEN_PICKAXE,
+            Material.DIAMOND_PICKAXE,
+            Material.NETHERITE_PICKAXE
+    );
 
     //Setters
     public void setMiningscore(double score) {
