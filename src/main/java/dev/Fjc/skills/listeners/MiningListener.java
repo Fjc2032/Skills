@@ -4,6 +4,9 @@ import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
 import dev.Fjc.skills.player.PlayerManager;
 import dev.Fjc.skills.skill.Mining;
+import dev.Fjc.skills.skill.subskills.Excavator;
+import dev.Fjc.skills.skill.subskills.ExplosivesTech;
+import dev.Fjc.skills.skill.subskills.Spelunker;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,11 +23,22 @@ import static java.util.Map.entry;
 
 public class MiningListener extends Mining implements Listener {
 
+    Spelunker spelunker;
+    ExplosivesTech explosivesTech;
+    Excavator excavator;
+
     YMLDataStorage storage;
+
+    static double score;
 
     public MiningListener(@NotNull Skills plugin) {
         super(plugin);
         this.storage = plugin.getStorage();
+
+        this.excavator = new Excavator(plugin);
+        this.explosivesTech = new ExplosivesTech(plugin);
+        this.spelunker = new Spelunker(plugin);
+
     }
 
     /**
@@ -58,8 +72,17 @@ public class MiningListener extends Mining implements Listener {
             //The stuff here will add a "score" to the player's mining index. After a certain
             //point, the specialization will improve. At least that's the theory.
             //Obviously, there's nothing here yet since it's all theoretical.
-            addScore(player, blockScore.get(block.getType()));
             storage.addMiningData(player, skillSetMap);
+            addScore(player, blockScore.get(block.getType()));
+        }
+    }
+
+    @EventHandler
+    public void activateAbilities(BlockBreakEvent event) {
+        score = storage.getMiningScore(event.getPlayer());
+
+        if (score >= 5000) {
+
         }
     }
 }

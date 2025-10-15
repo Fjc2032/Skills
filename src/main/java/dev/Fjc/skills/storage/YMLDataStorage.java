@@ -37,7 +37,7 @@ public class YMLDataStorage {
     }
 
     public double getMiningScore(Player player) {
-        return configuration.getDouble(SkillSet.MINING.getSkill() + player.getUniqueId());
+        return configuration.getDouble(SkillSet.MINING.getSkill() + player.getUniqueId(), 0);
     }
     public void setMiningScore(Player player, double score) {
         String path = SkillSet.MINING.getSkill() + player.getUniqueId();
