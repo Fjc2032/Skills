@@ -3,11 +3,11 @@ package dev.Fjc.skills.enums;
 public enum SkillSet {
 
     MINING("mining"),
-    BUILDING,
+    BUILDING("building"),
     GUARD,
     CRAFTSMAN;
 
-    private String skill;
+    private final String skill;
 
     SkillSet() {
         this.skill = null;

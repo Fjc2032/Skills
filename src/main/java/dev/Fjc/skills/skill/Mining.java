@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents the main Mining skill.
@@ -21,6 +20,7 @@ import java.util.Map;
 public class Mining extends SkillController {
 
     public Mining(@NotNull Skills plugin) {
+        super(plugin);
         this.plugin = plugin;
         this.storage = plugin.getStorage();
     }
@@ -85,11 +85,7 @@ public class Mining extends SkillController {
     public void setMiningscore(double score) {
         this.miningscore = score;
     }
-    public void setTotalScore() {
-        setTotalscore(getTotalscore() + miningscore);
-    }
     public void addScore(Player player, double score) {
         storage.setMiningScore(player,storage.getMiningScore(player) + score);
     }
-
 }

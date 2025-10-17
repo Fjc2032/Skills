@@ -1,0 +1,2 @@
+mining-blocks:
+  {STONE: 1d, COBBLSTONE: 1d, IRON_ORE: 3d}

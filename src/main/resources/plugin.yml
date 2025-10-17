@@ -1,5 +1,5 @@
 name: Skills
-version: '0.1-b'
+version: '${project.version}'
 main: dev.Fjc.skills.Skills
 api-version: '1.21'
 prefix: Skills
