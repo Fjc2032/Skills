@@ -68,6 +68,7 @@ public class Spelunker extends Mining {
         double score = storage.getMiningScore(player);
         double value = score >= 8000 ? (1 + (score/1500) - 8000) : 0;
 
+        if (value <= 0) return;
         if (!block.getBlockData().isPreferredTool(player.getInventory().getItemInMainHand())) return;
         if (canGetXP(event)) world.dropItemNaturally(block.getLocation(), ItemStack.of(block.getType(), (int) value)); //todo better rounding, cuz this int cast is dumb
     }
@@ -86,6 +87,7 @@ public class Spelunker extends Mining {
         double score = storage.getMiningScore(player);
         double value = score >= 5000 ? (1 + (score/100) - 5000) : 0;
 
+        if (value <= 0) return;
         if (canGetXP(event)) event.setExpToDrop(initial + (int) value); //todo same problem here
     }
 

@@ -5,6 +5,7 @@ import dev.Fjc.skills.listeners.ServerListener;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -32,6 +33,7 @@ public final class Skills extends JavaPlugin {
         // Plugin shutdown logic
     }
 
+    @NotNull
     public YMLDataStorage getStorage() {
         return storage;
     }

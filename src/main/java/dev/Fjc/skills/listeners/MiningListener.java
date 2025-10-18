@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -30,6 +31,8 @@ public class MiningListener extends Mining implements Listener {
     Skills plugin;
 
     static double score;
+
+    static int blocksBroken = 0;
 
     public MiningListener(@NotNull Skills plugin) {
         super(plugin);
@@ -52,21 +55,37 @@ public class MiningListener extends Mining implements Listener {
         Map<Map<UUID, SkillSet>, Double> skillSetMap = this.manager.skillMap();
 
         if (storage.getMaterialScores().containsKey(block.getType())) {
-            /*
-            The stuff here will add a "score" to the player's mining index. After a certain
-            point, the specialization will improve. At least that's the theory.
-            Obviously, there's nothing here yet since it's all theoretical.
-            */
             storage.addMiningData(player, skillSetMap);
             addScore(player, storage.getMaterialScores().get(block.getType()));
+
+            player.sendMessage("You mined " + block.getType() + " for " + storage.getMaterialScores().get(block.getType()) + " points.");
         }
     }
 
     @EventHandler
-    public void activateAbilities(BlockBreakEvent event) {
+    public void passives(BlockBreakEvent event) {
         score = storage.getMiningScore(event.getPlayer());
 
         spelunker.oreBonus(event);
         spelunker.xpBoost(event);
+    }
+
+    @EventHandler
+    public void demolition(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+
+        blocksBroken++;
+        if (blocksBroken >= 100) {
+            explosivesTech.demolitionFury(event, val -> {
+                player.sendMessage("You destroyed " + val + "blocks while demolition fury was active.");
+                blocksBroken = -100;
+            });
+        }
+
+    }
+
+    @EventHandler
+    public void abilities(PlayerInteractEvent event) {
+        explosivesTech.createExplosion(event);
     }
 }

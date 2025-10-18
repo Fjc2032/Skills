@@ -2,7 +2,9 @@ package dev.Fjc.skills.skill.subskills;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.skill.Mining;
+import dev.Fjc.skills.storage.YMLDataStorage;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,21 +24,27 @@ import java.util.function.Consumer;
  * Abilities: <br>
  * TNT Tactics Ability - right click with a pickaxe in hand to blow up an area. <br>
  * Demolition Fury Ability - Blasts through multiple blocks at once (for a very brief time period).
+ * <p>
+ * Unlocked after 12000 XP.
  */
 public class ExplosivesTech extends Mining {
 
     private final Skills plugin;
 
+    private final YMLDataStorage storage;
+
     public ExplosivesTech(@NotNull Skills plugin) {
         super(plugin);
         this.plugin = plugin;
+        this.storage = plugin.getStorage();
     }
 
     /**
-     * Creates an explosion at the given location.
+     * Creates an explosion at the given location. 12000 score required
      * @param event The event that determines the location of the TNT.
      * @apiNote The TNT will explode immediately.
      */
+    @SuppressWarnings("all")
     public void createExplosion(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         final World world = player.getWorld();
@@ -43,10 +52,19 @@ public class ExplosivesTech extends Mining {
                 ? event.getPlayer().getEyeLocation()
                 : null;
 
+        double score = storage.getMiningScore(player);
+        double value = score >= 12000
+                ? (1 + (score / 2000) - 12000)
+                : 0;
+
         if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (target == null) return;
         if (!pickaxes.contains(player.getInventory().getItemInMainHand().getType())) return;
-        world.spawn(target, TNTPrimed.class);
+
+        if (value == 0) return;
+        TNTPrimed tnt = world.spawn(target, TNTPrimed.class);
+        EntityExplodeEvent explodeEvent = new EntityExplodeEvent(tnt, target, surroundingBlocks(target.getBlock()), (float) value + 1, ExplosionResult.DESTROY);
+        this.plugin.getServer().getPluginManager().callEvent(explodeEvent);
     }
 
     /**
@@ -64,15 +82,16 @@ public class ExplosivesTech extends Mining {
         ScheduledTask task = player.getScheduler().runAtFixedRate(this.plugin, run -> {
             for (Block block : surroundingBlocks(initialBlock)) {
                 if (!block.isEmpty()) {
-                    block.breakNaturally();
+                    block.breakNaturally(player.getInventory().getItemInMainHand());
                     lambdaContext.destroyedBlocks++;
                 }
             }
-        }, null, 0L, 500L);
+        }, null, 1L, 500L);
 
         player.getScheduler().runDelayed(this.plugin, run -> {
             if (task != null) task.cancel();
             callback.accept(lambdaContext.destroyedBlocks);
         }, null, 501L);
     }
+
 }

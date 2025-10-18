@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Map.entry;
+
 public class YMLDataStorage {
     private final Skills plugin;
 
@@ -71,7 +73,7 @@ public class YMLDataStorage {
         String path = SkillSet.MINING.getSkill() + player.getUniqueId();
 
         for (double value : data.values()) {
-            dataCluster.set(path, value);
+            dataCluster.set(path, Double.isNaN(value) || value > 0 ? 0 : value);
         }
     }
 
@@ -85,6 +87,9 @@ public class YMLDataStorage {
                     materials.add(material);
                 } catch (IllegalArgumentException e) {
                     this.plugin.getLogger().warning("An object in the material map is invalid!");
+                    return materials.stream()
+                            .filter(Objects::nonNull)
+                            .toList();
                 }
             }
         }
@@ -93,7 +98,7 @@ public class YMLDataStorage {
     }
 
     public @NotNull Map<Material, Double> getMaterialScores() {
-        return blockScoreCluster.getMapList("mining-blocks").stream()
+        Map<Material, Double> map = blockScoreCluster.getMapList("mining-blocks").stream()
                 .flatMap(obj -> obj.entrySet().stream())
                 .flatMap(entry -> {
                     try {
@@ -101,7 +106,7 @@ public class YMLDataStorage {
                                 entry.getKey().toString().toUpperCase()
                         );
                         double value = ((Number) entry.getValue()).doubleValue();
-                        return Stream.of(Map.entry(material, value));
+                        return Stream.of(entry(material, value));
                     } catch (IllegalArgumentException exception) {
                         this.plugin.getLogger().warning("An invalid material was caught in the data stream!");
                         return Stream.empty();
@@ -112,6 +117,17 @@ public class YMLDataStorage {
                         Map.Entry::getValue,
                         Double::sum
                 ));
+
+        //If something goes wrong with the data stream above, just load this instead
+        Map<Material, Double> fallback = Map.ofEntries(
+                entry(Material.STONE, 0.5),
+                entry(Material.COBBLESTONE, 0.5),
+                entry(Material.IRON_ORE, 2.0),
+                entry(Material.GOLD_ORE, 4.25),
+                entry(Material.DIAMOND_ORE, 8.0),
+                entry(Material.ANCIENT_DEBRIS, 12.0)
+        );
+        return map.containsKey(null) || map.containsValue(null) || map.isEmpty() ? fallback : map;
     }
 
     public double getMiningScore(Player player) {

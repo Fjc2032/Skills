@@ -21,7 +21,6 @@ import java.util.Objects;
  */
 public class Excavator extends Mining {
 
-
     public Excavator(@NotNull Skills plugin) {
         super(plugin);
     }
@@ -30,7 +29,7 @@ public class Excavator extends Mining {
         if (canGetXP(event)) {
             for (Block block : veinBlocks(event.getBlock())) {
                 if (!pickaxes.contains(event.getPlayer().getInventory().getItemInMainHand().getType())) continue;
-                block.breakNaturally();
+                block.breakNaturally(event.getPlayer().getInventory().getItemInMainHand());
             }
         }
     }
@@ -40,7 +39,19 @@ public class Excavator extends Mining {
     }
 
     private List<Block> veinBlocks(Block block) {
-        List<Block> objects = new ArrayList<>(16);
+        List<Block> objects = new ArrayList<>(48);
+        World world = block.getWorld();
+
+        //Get coordinates of the block
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
+
+        //Use some derivatives to get the other blocks
+        for (int dx = -1; dx < 1; dx++) for (int dy = -1; dy < 1; dy++) for (int dz = -1; dz < 1; dz++) {
+            if (dx == 0 && dy == 0 && dz == 0) continue;
+            objects.add(world.getBlockAt(x + dx, y + dy, z + dz));
+        }
         for (Block block1 : surroundingBlocks(block)) {
             if (block1.getType() == block.getType()) objects.add(block1);
             for (Block block2 : surroundingBlocks(block1)) {

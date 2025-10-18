@@ -1,2 +1,6 @@
 mining-blocks:
-  {STONE: 1d, COBBLSTONE: 1d, IRON_ORE: 3d}
+  - STONE: 1d
+  - COBBLESTONE: 1d
+  - IRON_ORE: 2d
+  - GOLD_ORE: 5d
+  - DIAMOND_ORE: 8d
