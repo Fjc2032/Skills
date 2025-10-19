@@ -2,6 +2,7 @@ package dev.Fjc.skills;
 
 import dev.Fjc.skills.command.GetMaterialsCommand;
 import dev.Fjc.skills.command.Reload;
+import dev.Fjc.skills.command.score.AddScoreCommand;
 import dev.Fjc.skills.listeners.MiningListener;
 import dev.Fjc.skills.listeners.ServerListener;
 import dev.Fjc.skills.storage.YMLDataStorage;
@@ -31,6 +32,7 @@ public final class Skills extends JavaPlugin {
 
         setExecutor("getmaterials", new GetMaterialsCommand(this));
         setExecutor("skills-reload", new Reload(this));
+        setExecutor("addscore", new AddScoreCommand(this));
 
     }
 

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AttributeManager {
 
-    private Skills plugin;
+    private final Skills plugin;
 
     public AttributeManager(@NotNull Skills plugin) {
         this.plugin = plugin;
@@ -22,6 +22,13 @@ public class AttributeManager {
 
     public void addAttributeModifier(Player player, Attribute attribute, AttributeModifier modifier) {
         if (attribute == null) return;
+        var instance = player.getAttribute(attribute);
+
+        if (instance == null) return;
+        instance.getModifiers().stream()
+                .filter(obj -> obj.getName().equals(modifier.getName()))
+                .forEach(instance::removeModifier);
+
         player.getAttribute(attribute).addModifier(modifier);
     }
 

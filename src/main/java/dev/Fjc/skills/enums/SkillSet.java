@@ -1,5 +1,7 @@
 package dev.Fjc.skills.enums;
 
+import org.jetbrains.annotations.Nullable;
+
 public enum SkillSet {
 
     MINING("mining"),
@@ -19,5 +21,12 @@ public enum SkillSet {
 
     public String getSkill() {
         return skill;
+    }
+
+    public static @Nullable SkillSet parseSkill(String name) {
+        for (SkillSet skill : SkillSet.values()) {
+            return name.toUpperCase().equals(skill.name()) ? skill : null;
+        }
+        return null;
     }
 }

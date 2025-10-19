@@ -12,3 +12,5 @@ commands:
     description: Reloads the Skills plugin.
   getmaterials:
     description: Returns a list of all valid materials.
+  addscore:
+    description: Adds score to a specified player's skill.

@@ -2,7 +2,6 @@ package dev.Fjc.skills.listeners;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
-import dev.Fjc.skills.player.PlayerManager;
 import dev.Fjc.skills.skill.Mining;
 import dev.Fjc.skills.skill.subskills.Excavator;
 import dev.Fjc.skills.skill.subskills.ExplosivesTech;
@@ -16,9 +15,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.UUID;
-
 public class MiningListener extends Mining implements Listener {
 
     Spelunker spelunker;
@@ -26,7 +22,6 @@ public class MiningListener extends Mining implements Listener {
     Excavator excavator;
 
     YMLDataStorage storage;
-    PlayerManager manager;
 
     Skills plugin;
 
@@ -51,14 +46,10 @@ public class MiningListener extends Mining implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        this.manager = new PlayerManager(this.plugin, player);
-        Map<Map<UUID, SkillSet>, Double> skillSetMap = this.manager.skillMap();
-
         double blockScore = storage.getMaterialScores().getOrDefault(block.getType(), 0.0);
 
         if (blockScore > 0) {
-            storage.addMiningData(player, blockScore);
-            addScore(player, storage.getMaterialScores().get(block.getType()));
+            storage.incrementSkillScore(player, SkillSet.MINING, blockScore);
 
             player.sendMessage("You mined " + block.getType() + " for " + storage.getMaterialScores().get(block.getType()) + " points.");
         }
@@ -66,7 +57,8 @@ public class MiningListener extends Mining implements Listener {
 
     @EventHandler
     public void passives(BlockBreakEvent event) {
-        score = storage.getMiningScore(event.getPlayer());
+        Player player = event.getPlayer();
+        score = storage.getScore(player, SkillSet.MINING);
 
         spelunker.oreBonus(event);
         spelunker.xpBoost(event);

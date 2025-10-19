@@ -6,7 +6,7 @@
 
     <groupId>dev.Fjc</groupId>
     <artifactId>skills</artifactId>
-    <version>0.7.2-b</version>
+    <version>0.8.7-b</version>
     <packaging>jar</packaging>
 
     <name>skills</name>
@@ -55,6 +55,10 @@
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -62,6 +66,12 @@
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
             <version>1.21.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

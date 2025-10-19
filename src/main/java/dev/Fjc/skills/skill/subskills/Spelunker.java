@@ -1,6 +1,8 @@
 package dev.Fjc.skills.skill.subskills;
 
 import dev.Fjc.skills.Skills;
+import dev.Fjc.skills.enums.SkillSet;
+import dev.Fjc.skills.player.AttributeManager;
 import dev.Fjc.skills.skill.Mining;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.NamespacedKey;
@@ -29,10 +31,13 @@ public class Spelunker extends Mining {
 
     private final YMLDataStorage storage;
 
+    private final AttributeManager attributeManager;
+
     public Spelunker(@NotNull Skills plugin) {
         super(plugin);
         this.plugin = plugin;
         this.storage = plugin.getStorage();
+        this.attributeManager = new AttributeManager(plugin);
     }
 
     /**
@@ -43,14 +48,11 @@ public class Spelunker extends Mining {
      * @param player The player to apply this to
      */
     public void setMiningSpeed(Player player) {
-        double score = storage.getMiningScore(player);
-        double value = score >= 5000 ? (1 + (score/1000) - 5000) : 0;
+        double score = storage.getScore(player, SkillSet.MINING);
+        double value = Math.min(score >= 5000 ? 1 + (score/1000) : 0, 1023);
         NamespacedKey key = new NamespacedKey(this.plugin, "mining-speed-boost-skill");
         AttributeModifier modifier = new AttributeModifier(key, value, AttributeModifier.Operation.ADD_NUMBER);
-        if (player.getAttribute(Attribute.MINING_EFFICIENCY).getModifiers().contains(modifier)) {
-            player.getAttribute(Attribute.MINING_EFFICIENCY).removeModifier(modifier);
-        }
-        player.getAttribute(Attribute.MINING_EFFICIENCY).addModifier(modifier);
+        attributeManager.addAttributeModifier(player, Attribute.MINING_EFFICIENCY, modifier);
     }
 
     /**
@@ -65,8 +67,8 @@ public class Spelunker extends Mining {
         final Player player = event.getPlayer();
         World world = block.getWorld();
 
-        double score = storage.getMiningScore(player);
-        double value = score >= 8000 ? (1 + (score/1500) - 8000) : 0;
+        double score = storage.getScore(player, SkillSet.MINING);
+        double value = score >= 8000 ? 1 + (score/1500) : 0;
 
         if (value <= 0) return;
         if (!block.getBlockData().isPreferredTool(player.getInventory().getItemInMainHand())) return;
@@ -84,8 +86,8 @@ public class Spelunker extends Mining {
         Player player = event.getPlayer();
         int initial = event.getExpToDrop();
 
-        double score = storage.getMiningScore(player);
-        double value = score >= 5000 ? (1 + (score/100) - 5000) : 0;
+        double score = storage.getScore(player, SkillSet.MINING);
+        double value = score >= 5000 ? 1 + (score/100) : 0;
 
         if (value <= 0) return;
         if (canGetXP(event)) event.setExpToDrop(initial + (int) value); //todo same problem here

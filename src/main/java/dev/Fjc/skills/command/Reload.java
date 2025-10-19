@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class Reload implements CommandExecutor {
 
-    YMLDataStorage storage;
+    private final YMLDataStorage storage;
 
     public Reload(Skills plugin) {
         this.storage = plugin.getStorage();

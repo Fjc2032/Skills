@@ -1,6 +1,7 @@
 package dev.Fjc.skills.skill.subskills;
 
 import dev.Fjc.skills.Skills;
+import dev.Fjc.skills.enums.SkillSet;
 import dev.Fjc.skills.skill.Mining;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -44,27 +45,23 @@ public class ExplosivesTech extends Mining {
      * @param event The event that determines the location of the TNT.
      * @apiNote The TNT will explode immediately.
      */
-    @SuppressWarnings("UnstableApiUsage")
     public void createExplosion(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         final World world = player.getWorld();
-        final Location target = event.getPlayer().getEyeLocation().distance(player.getLocation()) <= 8
-                ? event.getPlayer().getEyeLocation()
-                : null;
 
-        double score = storage.getMiningScore(player);
+        double score = storage.getScore(player, SkillSet.MINING);
         double value = score >= 12000
-                ? (1 + (score / 2000) - 12000)
+                ? 1 + (score / 2000)
                 : 0;
 
-        if (event.getAction() != Action.RIGHT_CLICK_AIR || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (target == null) return;
+        final Location target = event.getPlayer().getEyeLocation().getDirection().multiply(8 + value).toLocation(world);
+
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!pickaxes.contains(player.getInventory().getItemInMainHand().getType())) return;
 
         if (value == 0) return;
-        TNTPrimed tnt = world.spawn(target, TNTPrimed.class);
-        EntityExplodeEvent explodeEvent = new EntityExplodeEvent(tnt, target, surroundingBlocks(target.getBlock()), (float) value + 1, ExplosionResult.DESTROY);
-        this.plugin.getServer().getPluginManager().callEvent(explodeEvent);
+
+        world.createExplosion(target, (float) (value + 1), false, true, player);
     }
 
     /**

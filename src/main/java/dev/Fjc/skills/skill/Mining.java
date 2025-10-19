@@ -2,12 +2,10 @@ package dev.Fjc.skills.skill;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.player.SkillController;
-import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,21 +19,8 @@ public class Mining extends SkillController {
 
     public Mining(@NotNull Skills plugin) {
         super(plugin);
-        this.plugin = plugin;
-        this.storage = plugin.getStorage();
     }
 
-    private Skills plugin;
-
-    private YMLDataStorage storage;
-
-    private double miningscore;
-
-
-    //Getters
-    public double getMiningscore(Player player) {
-        return this.storage.getMiningScore(player);
-    }
     protected boolean canGetXP(BlockBreakEvent event) {
         return event.getExpToDrop() > 0;
     }
@@ -80,12 +65,4 @@ public class Mining extends SkillController {
             Material.DIAMOND_PICKAXE,
             Material.NETHERITE_PICKAXE
     );
-
-    //Setters
-    public void setMiningscore(double score) {
-        this.miningscore = score;
-    }
-    public void addScore(Player player, double score) {
-        storage.setMiningScore(player,storage.getMiningScore(player) + score);
-    }
 }
