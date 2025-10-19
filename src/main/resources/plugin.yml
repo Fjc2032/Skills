@@ -6,3 +6,9 @@ prefix: Skills
 load: STARTUP
 authors: [ Fjc ]
 description: Allows a player to specialize in skills.
+
+commands:
+  skills-reload:
+    description: Reloads the Skills plugin.
+  getmaterials:
+    description: Returns a list of all valid materials.

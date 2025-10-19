@@ -54,8 +54,10 @@ public class MiningListener extends Mining implements Listener {
         this.manager = new PlayerManager(this.plugin, player);
         Map<Map<UUID, SkillSet>, Double> skillSetMap = this.manager.skillMap();
 
-        if (storage.getMaterialScores().containsKey(block.getType())) {
-            storage.addMiningData(player, skillSetMap);
+        double blockScore = storage.getMaterialScores().getOrDefault(block.getType(), 0.0);
+
+        if (blockScore > 0) {
+            storage.addMiningData(player, blockScore);
             addScore(player, storage.getMaterialScores().get(block.getType()));
 
             player.sendMessage("You mined " + block.getType() + " for " + storage.getMaterialScores().get(block.getType()) + " points.");
@@ -77,7 +79,7 @@ public class MiningListener extends Mining implements Listener {
         blocksBroken++;
         if (blocksBroken >= 100) {
             explosivesTech.demolitionFury(event, val -> {
-                player.sendMessage("You destroyed " + val + "blocks while demolition fury was active.");
+                player.sendMessage("You destroyed " + val + " blocks while demolition fury was active.");
                 blocksBroken = -100;
             });
         }

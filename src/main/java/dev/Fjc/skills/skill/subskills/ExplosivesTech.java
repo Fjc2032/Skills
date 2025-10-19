@@ -44,7 +44,7 @@ public class ExplosivesTech extends Mining {
      * @param event The event that determines the location of the TNT.
      * @apiNote The TNT will explode immediately.
      */
-    @SuppressWarnings("all")
+    @SuppressWarnings("UnstableApiUsage")
     public void createExplosion(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         final World world = player.getWorld();

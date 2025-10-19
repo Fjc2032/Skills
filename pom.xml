@@ -6,7 +6,7 @@
 
     <groupId>dev.Fjc</groupId>
     <artifactId>skills</artifactId>
-    <version>0.6.1-b</version>
+    <version>0.7.2-b</version>
     <packaging>jar</packaging>
 
     <name>skills</name>

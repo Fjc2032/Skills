@@ -1,8 +1,11 @@
 package dev.Fjc.skills;
 
+import dev.Fjc.skills.command.GetMaterialsCommand;
+import dev.Fjc.skills.command.Reload;
 import dev.Fjc.skills.listeners.MiningListener;
 import dev.Fjc.skills.listeners.ServerListener;
 import dev.Fjc.skills.storage.YMLDataStorage;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +29,9 @@ public final class Skills extends JavaPlugin {
         setListener(new MiningListener(this));
         setListener(new ServerListener(this));
 
+        setExecutor("getmaterials", new GetMaterialsCommand(this));
+        setExecutor("skills-reload", new Reload(this));
+
     }
 
     @Override
@@ -40,5 +46,8 @@ public final class Skills extends JavaPlugin {
 
     private void setListener(Listener listener) {
         this.getServer().getPluginManager().registerEvents(listener, this);
+    }
+    private void setExecutor(String command, CommandExecutor executor) {
+        this.getServer().getPluginCommand(command).setExecutor(executor);
     }
 }

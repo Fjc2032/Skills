@@ -2,7 +2,9 @@ package dev.Fjc.skills.storage;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
+import io.papermc.paper.annotation.DoNotUse;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -49,7 +51,14 @@ public class YMLDataStorage {
         configuration.addDefault("isEnabled", true);
 
         //
-        blockScoreCluster.addDefault("mining-blocks", new HashMap<>());
+        blockScoreCluster.addDefault("mining-blocks", Map.ofEntries(
+                entry(Material.STONE, 0.5),
+                entry(Material.COBBLESTONE, 0.5),
+                entry(Material.IRON_ORE, 2.0),
+                entry(Material.GOLD_ORE, 4.25),
+                entry(Material.DIAMOND_ORE, 8.0),
+                entry(Material.ANCIENT_DEBRIS, 12.0)
+        ));
     }
 
     @SuppressWarnings("all")
@@ -63,18 +72,34 @@ public class YMLDataStorage {
     }
 
     public void reload() {
-        for (File file : files) {
-            YamlConfiguration.loadConfiguration(file);
+        try {
+            dataCluster.load(dataFile);
+            blockScoreCluster.load(blockScoreFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            this.plugin.getLogger().warning("Something went wrong while attempting to reload the files!");
+            e.printStackTrace();
         }
     }
 
     //Mining - start
+    @SuppressWarnings("UnstableApiUsage")
+    @DoNotUse
     public void addMiningData(Player player, Map<Map<UUID, SkillSet>, Double> data) {
         String path = SkillSet.MINING.getSkill() + player.getUniqueId();
 
         for (double value : data.values()) {
-            dataCluster.set(path, Double.isNaN(value) || value > 0 ? 0 : value);
+            dataCluster.set(path, Double.isNaN(value) || value < 0 ? 0 : value);
         }
+
+        save(dataCluster, dataFile);
+    }
+
+    public void addMiningData(Player player, double data) {
+        String path = SkillSet.MINING.getSkill() + "." + player.getUniqueId();
+        double current = dataCluster.getDouble(path, 0);
+
+        dataCluster.set(path, current + data);
+        save(dataCluster, dataFile);
     }
 
     public List<Material> getValidMiningMaterials() {
@@ -131,10 +156,10 @@ public class YMLDataStorage {
     }
 
     public double getMiningScore(Player player) {
-        return dataCluster.getDouble(SkillSet.MINING.getSkill() + player.getUniqueId(), 0);
+        return dataCluster.getDouble(SkillSet.MINING.getSkill() + "." + player.getUniqueId(), 0);
     }
     public void setMiningScore(Player player, double score) {
-        String path = SkillSet.MINING.getSkill() + player.getUniqueId();
+        String path = SkillSet.MINING.getSkill() + "." + player.getUniqueId();
         this.dataCluster.set(path, score);
     }
     //Mining - end
@@ -147,7 +172,7 @@ public class YMLDataStorage {
     }
 
     public double getBuildScore(Player player) {
-        return dataCluster.getDouble(SkillSet.BUILDING.getSkill() + player.getUniqueId(), 0);
+        return dataCluster.getDouble(SkillSet.BUILDING.getSkill() + "." + player.getUniqueId(), 0);
     }
     public void setBuildScore(Player player, double score) {
         String path = SkillSet.BUILDING.getSkill() + player.getUniqueId();
@@ -167,6 +192,15 @@ public class YMLDataStorage {
         return ((getMiningScore(player) - getBuildScore(player)) / 2) > 50
                 ? getMiningScore(player) - getBuildScore(player)
                 : 0;
+    }
+
+    private void save(YamlConfiguration yaml, File file) {
+        try {
+            yaml.save(file);
+        } catch (IOException | IllegalArgumentException exception) {
+            this.plugin.getLogger().warning("Something went wrong while attempting to save the file!");
+            exception.printStackTrace();
+        }
     }
 
 }
