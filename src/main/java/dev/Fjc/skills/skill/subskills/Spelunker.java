@@ -37,7 +37,7 @@ public class Spelunker extends Mining {
         super(plugin);
         this.plugin = plugin;
         this.storage = plugin.getStorage();
-        this.attributeManager = new AttributeManager(plugin);
+        this.attributeManager = plugin.getAttributeManager();
     }
 
     /**

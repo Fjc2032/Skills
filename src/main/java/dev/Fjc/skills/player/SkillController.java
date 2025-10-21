@@ -1,23 +1,19 @@
 package dev.Fjc.skills.player;
 
 import dev.Fjc.skills.Skills;
-import dev.Fjc.skills.storage.YMLDataStorage;
-import org.reflections.Reflections;
-
-import java.util.Set;
+import dev.Fjc.skills.skill.Guard;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * Represents all skills.
+ * Represents all main Skills.
  */
-public class SkillController {
+public interface SkillController {
 
-    static YMLDataStorage storage;
-
-    public SkillController(Skills plugin) {
-        storage = plugin.getStorage();
+    private static Skills getPlugin() {
+        return JavaPlugin.getPlugin(Skills.class);
     }
 
-    public Set<Class<? extends SkillController>> getSubSkills() {
-        return new Reflections("dev.Fjc.skills.player").getSubTypesOf(SkillController.class);
-    }
+    Guard guard = new Guard(getPlugin());
+
 }

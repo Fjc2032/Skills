@@ -15,10 +15,9 @@ import java.util.List;
 /**
  * Represents the main Mining skill.
  */
-public class Mining extends SkillController {
+public class Mining implements SkillController {
 
     public Mining(@NotNull Skills plugin) {
-        super(plugin);
     }
 
     protected boolean canGetXP(BlockBreakEvent event) {

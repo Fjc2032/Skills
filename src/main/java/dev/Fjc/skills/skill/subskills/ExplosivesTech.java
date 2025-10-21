@@ -2,18 +2,16 @@ package dev.Fjc.skills.skill.subskills;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
+import dev.Fjc.skills.hunger.HungerManagement;
 import dev.Fjc.skills.skill.Mining;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,7 +52,7 @@ public class ExplosivesTech extends Mining {
                 ? 1 + (score / 2000)
                 : 0;
 
-        final Location target = event.getPlayer().getEyeLocation().getDirection().multiply(8 + value).toLocation(world);
+        final Location target = event.getPlayer().getEyeLocation().getDirection().multiply(8).toLocation(world);
 
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (!pickaxes.contains(player.getInventory().getItemInMainHand().getType())) return;
@@ -62,6 +60,8 @@ public class ExplosivesTech extends Mining {
         if (value == 0) return;
 
         world.createExplosion(target, (float) (value + 1), false, true, player);
+        HungerManagement.modifyHungerDecayRate(plugin, player, (int) Math.max(8 - (value * 0.25), 1));
+        HungerManagement.setExhaustionFromTask(event, player, 4.0f);
     }
 
     /**

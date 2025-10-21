@@ -5,6 +5,7 @@ import dev.Fjc.skills.command.Reload;
 import dev.Fjc.skills.command.score.AddScoreCommand;
 import dev.Fjc.skills.listeners.MiningListener;
 import dev.Fjc.skills.listeners.ServerListener;
+import dev.Fjc.skills.player.AttributeManager;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.event.Listener;
@@ -16,6 +17,7 @@ import java.io.IOException;
 public final class Skills extends JavaPlugin {
 
     private final YMLDataStorage storage = new YMLDataStorage(this);
+    private final AttributeManager attributeManager = new AttributeManager(this);
 
     @Override
     public void onEnable() {
@@ -44,6 +46,11 @@ public final class Skills extends JavaPlugin {
     @NotNull
     public YMLDataStorage getStorage() {
         return storage;
+    }
+
+    @NotNull
+    public AttributeManager getAttributeManager() {
+        return attributeManager;
     }
 
     private void setListener(Listener listener) {

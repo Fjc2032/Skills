@@ -199,4 +199,14 @@ public class YMLDataStorage {
         return dataCluster.getDouble(path, 0);
     }
 
+    public double getTotalScore(Player player) {
+        double score = 0;
+        for (SkillSet skill : SkillSet.values()) {
+            String path = skill.getSkill() + "." + player.getUniqueId();
+            score += dataCluster.getDouble(path, 0);
+        }
+
+        return score;
+    }
+
 }
