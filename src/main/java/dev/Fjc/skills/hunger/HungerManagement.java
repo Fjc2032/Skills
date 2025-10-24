@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * A standalone, abstract class that contains methods for hunger management.
+ */
 public abstract class HungerManagement {
 
     public static void modifyHungerDecayRate(Skills plugin, Player player, int decay) {
@@ -22,6 +25,13 @@ public abstract class HungerManagement {
         if (event.callEvent()) player.setExhaustion(current + exhaustion);
     }
 
+    /**
+     * Builds a new consumable ItemStack with a saturation of zero.
+     * @param item The item to assign this data to.
+     * @param canEat Whether the item can be eaten even at full hunger.
+     * @param nutrition The amount of nutrition this item provides.
+     * @return The new ItemStack
+     */
     @SuppressWarnings("UnstableApiUsage")
     public static ItemStack createNewFoodItem(ItemStack item, boolean canEat, int nutrition) {
         FoodProperties foodBuilder = FoodProperties.food()
@@ -30,6 +40,7 @@ public abstract class HungerManagement {
                 .saturation(0)
                 .build();
 
+        if (item == null) return ItemStack.empty();
         item.setData(DataComponentTypes.FOOD, foodBuilder);
         return item;
     }

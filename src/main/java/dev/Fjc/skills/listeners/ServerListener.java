@@ -1,6 +1,7 @@
 package dev.Fjc.skills.listeners;
 
 import dev.Fjc.skills.Skills;
+import dev.Fjc.skills.skill.Building;
 import dev.Fjc.skills.skill.subskills.Spelunker;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.entity.Player;
@@ -13,11 +14,16 @@ import org.jetbrains.annotations.NotNull;
 public class ServerListener implements Listener {
     YMLDataStorage storage;
 
-    Spelunker spelunker;
+    // Main skills
+    protected Building building;
+
+    // Sub skills
+    protected Spelunker spelunker;
 
     public ServerListener(@NotNull Skills plugin) {
         this.storage = plugin.getStorage();
         this.spelunker = new Spelunker(plugin);
+        this.building = new Building(plugin);
     }
 
     @EventHandler
@@ -29,6 +35,11 @@ public class ServerListener implements Listener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
+        spelunker.setMiningSpeed(player);
+    }
+
+    protected void recalc(Player player) {
+        building.setBreakSpeed(player);
         spelunker.setMiningSpeed(player);
     }
 }

@@ -3,6 +3,7 @@ package dev.Fjc.skills;
 import dev.Fjc.skills.command.GetMaterialsCommand;
 import dev.Fjc.skills.command.Reload;
 import dev.Fjc.skills.command.score.AddScoreCommand;
+import dev.Fjc.skills.listeners.GuardListener;
 import dev.Fjc.skills.listeners.MiningListener;
 import dev.Fjc.skills.listeners.ServerListener;
 import dev.Fjc.skills.player.AttributeManager;
@@ -16,11 +17,14 @@ import java.io.IOException;
 
 public final class Skills extends JavaPlugin {
 
+    private static Skills instance;
+
     private final YMLDataStorage storage = new YMLDataStorage(this);
     private final AttributeManager attributeManager = new AttributeManager(this);
 
     @Override
     public void onEnable() {
+        instance = this;
         try {
             storage.buildFiles();
         } catch (IOException e) {
@@ -31,6 +35,7 @@ public final class Skills extends JavaPlugin {
 
         setListener(new MiningListener(this));
         setListener(new ServerListener(this));
+        setListener(new GuardListener(this));
 
         setExecutor("getmaterials", new GetMaterialsCommand(this));
         setExecutor("skills-reload", new Reload(this));
@@ -40,7 +45,7 @@ public final class Skills extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        instance = null;
     }
 
     @NotNull
@@ -58,5 +63,9 @@ public final class Skills extends JavaPlugin {
     }
     private void setExecutor(String command, CommandExecutor executor) {
         this.getServer().getPluginCommand(command).setExecutor(executor);
+    }
+
+    public static Skills getInstance() {
+        return instance;
     }
 }

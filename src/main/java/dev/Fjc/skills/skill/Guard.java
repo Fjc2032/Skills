@@ -66,14 +66,21 @@ public class Guard implements SkillController {
         Guard.defense = defense;
     }
 
-    public boolean setExtraDefense(Skills plugin, Player player) {
+    /**
+     * Adds any extra defense value as an absorption modifier.
+     * @param plugin The plugin to reference this to
+     * @param player The player to target
+     * @return The extra defense, as a double (percentage)
+     */
+    public double setExtraDefense(Skills plugin, Player player) {
         double getDefense = getDefense(plugin, player);
         if (getDefense > 1) {
             NamespacedKey key = new NamespacedKey(plugin, "building-guard-defense-extra");
             AttributeModifier modifier = new AttributeModifier(key, getDefense - 1, AttributeModifier.Operation.ADD_NUMBER);
             attributeManager.addAttributeModifier(player, Attribute.MAX_ABSORPTION, modifier);
+            return getDefense - 1;
         }
 
-        return getDefense > 1;
+        return 0;
     }
 }

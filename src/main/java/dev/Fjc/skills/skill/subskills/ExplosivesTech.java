@@ -60,6 +60,8 @@ public class ExplosivesTech extends Mining {
         if (value == 0) return;
 
         world.createExplosion(target, (float) (value + 1), false, true, player);
+
+        //Hunger decay
         HungerManagement.modifyHungerDecayRate(plugin, player, (int) Math.max(8 - (value * 0.25), 1));
         HungerManagement.setExhaustionFromTask(event, player, 4.0f);
     }

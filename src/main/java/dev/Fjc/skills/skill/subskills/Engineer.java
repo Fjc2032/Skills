@@ -9,6 +9,7 @@ import dev.Fjc.skills.skill.Building;
  *
  */
 public class Engineer extends Building {
+
     public Engineer(Skills plugin) {
         super(plugin);
     }

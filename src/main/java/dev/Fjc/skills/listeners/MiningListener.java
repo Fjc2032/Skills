@@ -2,6 +2,7 @@ package dev.Fjc.skills.listeners;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
+import dev.Fjc.skills.hunger.HungerManagement;
 import dev.Fjc.skills.skill.Mining;
 import dev.Fjc.skills.skill.subskills.Excavator;
 import dev.Fjc.skills.skill.subskills.ExplosivesTech;
@@ -73,6 +74,7 @@ public class MiningListener extends Mining implements Listener {
             explosivesTech.demolitionFury(event, val -> {
                 player.sendMessage("You destroyed " + val + " blocks while demolition fury was active.");
                 blocksBroken = -100;
+                HungerManagement.setExhaustionFromTask(event, player, 3.75f);
             });
         }
 
