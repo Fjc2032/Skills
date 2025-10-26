@@ -29,10 +29,15 @@ public class AttributeManager {
                 .filter(obj -> obj.getName().equals(modifier.getName()))
                 .forEach(instance::removeModifier);
 
-        player.getAttribute(attribute).addModifier(modifier);
+        instance.addModifier(modifier);
     }
 
     public void removeModifier(Player player, Attribute attribute, AttributeModifier modifier) {
-        player.getAttribute(attribute).removeModifier(modifier);
+        var inst = player.getAttribute(attribute);
+        if (inst == null) return;
+
+        inst.getModifiers().stream()
+                        .filter(obj -> obj.getName().equals(modifier.getName()))
+                        .forEach(inst::removeModifier);
     }
 }

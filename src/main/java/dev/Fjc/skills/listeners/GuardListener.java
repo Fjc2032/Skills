@@ -8,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,6 +37,12 @@ public class GuardListener extends Guard implements Listener {
     }
 
     @EventHandler
+    public void onAttack(EntityDamageByEntityEvent event) {
+        unarmed.unarmedAttack(event);
+        unarmed.stun(event);
+    }
+
+    @EventHandler
     public void onDefend(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (event.getAction().isRightClick() && player.getInventory().getItemInOffHand().isSimilar(ItemStack.of(Material.SHIELD))) {
@@ -42,5 +50,10 @@ public class GuardListener extends Guard implements Listener {
             double rand = random.nextDouble() * 10;
             storage.incrementSkillScore(player, SkillSet.GUARD, 1 + rand);
         }
+    }
+
+    @EventHandler
+    public void event(EntityDamageEvent event) {
+        reduceDamageTaken(event);
     }
 }

@@ -29,9 +29,7 @@ public class GetMaterialsCommand implements CommandExecutor {
         }
 
         if (args.length == 0) {
-            Map<Material, Double> map = storage.getMaterialScores().isEmpty() || storage.getMaterialScores().containsKey(null) || storage.getMaterialScores().containsValue(null)
-                    ? storage.blockMap()
-                    : storage.getMaterialScores();
+            Map<Material, Double> map = storage.blockMap();
             sender.sendMessage(map.toString());
             return true;
         }

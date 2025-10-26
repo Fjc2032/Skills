@@ -4,6 +4,7 @@ import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
 import dev.Fjc.skills.player.AttributeManager;
 import dev.Fjc.skills.player.SkillController;
+import dev.Fjc.skills.skill.subskills.Unarmed;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -15,7 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 /**
  * Represents the main Guard skill.
  */
-public class Guard implements SkillController {
+public class Guard implements SkillController, BaseFactory {
 
     private final YMLDataStorage storage;
 
@@ -29,9 +30,15 @@ public class Guard implements SkillController {
      */
     static double defense;
 
+    public static Unarmed unarmed;
+
     public Guard(Skills plugin) {
         this.storage = plugin.getStorage();
         this.attributeManager = plugin.getAttributeManager();
+    }
+
+    public static void factory(Skills plugin) {
+        unarmed = new Unarmed(plugin);
     }
 
     public void reduceDamageTaken(Event event) {

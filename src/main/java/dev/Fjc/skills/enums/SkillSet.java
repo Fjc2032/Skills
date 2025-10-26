@@ -2,8 +2,6 @@ package dev.Fjc.skills.enums;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.util.EnumSet;
-
 public enum SkillSet {
 
     MINING("mining"),

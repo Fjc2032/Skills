@@ -4,9 +4,6 @@ import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
 import dev.Fjc.skills.hunger.HungerManagement;
 import dev.Fjc.skills.skill.Mining;
-import dev.Fjc.skills.skill.subskills.Excavator;
-import dev.Fjc.skills.skill.subskills.ExplosivesTech;
-import dev.Fjc.skills.skill.subskills.Spelunker;
 import dev.Fjc.skills.storage.YMLDataStorage;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -18,13 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MiningListener extends Mining implements Listener {
 
-    Spelunker spelunker;
-    ExplosivesTech explosivesTech;
-    Excavator excavator;
-
-    YMLDataStorage storage;
-
-    Skills plugin;
+    private final YMLDataStorage storage;
 
     static double score;
 
@@ -32,13 +23,7 @@ public class MiningListener extends Mining implements Listener {
 
     public MiningListener(@NotNull Skills plugin) {
         super(plugin);
-        this.plugin = plugin;
         this.storage = plugin.getStorage();
-
-        this.excavator = new Excavator(plugin);
-        this.explosivesTech = new ExplosivesTech(plugin);
-        this.spelunker = new Spelunker(plugin);
-
     }
 
 
@@ -47,12 +32,12 @@ public class MiningListener extends Mining implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
 
-        double blockScore = storage.getMaterialScores().getOrDefault(block.getType(), 0.0);
+        double blockScore = storage.blockMap().getOrDefault(block.getType(), 0.0);
 
         if (blockScore > 0) {
             storage.incrementSkillScore(player, SkillSet.MINING, blockScore);
 
-            player.sendMessage("You mined " + block.getType() + " for " + storage.getMaterialScores().get(block.getType()) + " points.");
+            player.sendMessage("You mined " + block.getType() + " for " + storage.blockMap().get(block.getType()) + " points.");
         }
     }
 

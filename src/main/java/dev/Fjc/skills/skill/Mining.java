@@ -2,6 +2,9 @@ package dev.Fjc.skills.skill;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.player.SkillController;
+import dev.Fjc.skills.skill.subskills.Excavator;
+import dev.Fjc.skills.skill.subskills.ExplosivesTech;
+import dev.Fjc.skills.skill.subskills.Spelunker;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,9 +18,21 @@ import java.util.List;
 /**
  * Represents the main Mining skill.
  */
-public class Mining implements SkillController {
+public class Mining implements SkillController, BaseFactory {
+
+    //Local constructors. These will be passed onto listeners for subskill use.
+    public static Spelunker spelunker;
+    public static ExplosivesTech explosivesTech;
+    public static Excavator excavator;
 
     public Mining(@NotNull Skills plugin) {
+
+    }
+
+    public static void factory(Skills plugin) {
+        spelunker = new Spelunker(plugin);
+        explosivesTech = new ExplosivesTech(plugin);
+        excavator = new Excavator(plugin);
     }
 
     protected boolean canGetXP(BlockBreakEvent event) {
