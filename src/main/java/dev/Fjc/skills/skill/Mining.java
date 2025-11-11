@@ -1,6 +1,7 @@
 package dev.Fjc.skills.skill;
 
 import dev.Fjc.skills.Skills;
+import dev.Fjc.skills.enums.SubSkillSet;
 import dev.Fjc.skills.player.SkillController;
 import dev.Fjc.skills.skill.subskills.Excavator;
 import dev.Fjc.skills.skill.subskills.ExplosivesTech;
@@ -14,11 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents the main Mining skill.
  */
-public class Mining implements SkillController, BaseFactory {
+public class Mining implements SkillController {
 
     //Local constructors. These will be passed onto listeners for subskill use.
     public static Spelunker spelunker;
@@ -33,6 +35,11 @@ public class Mining implements SkillController, BaseFactory {
         spelunker = new Spelunker(plugin);
         explosivesTech = new ExplosivesTech(plugin);
         excavator = new Excavator(plugin);
+    }
+
+    @Override
+    public boolean enableCooldown(UUID uuid, SubSkillSet priority) {
+        return false;
     }
 
     protected boolean canGetXP(BlockBreakEvent event) {

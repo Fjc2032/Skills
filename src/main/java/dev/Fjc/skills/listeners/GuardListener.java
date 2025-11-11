@@ -4,6 +4,7 @@ import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
 import dev.Fjc.skills.skill.Guard;
 import dev.Fjc.skills.storage.YMLDataStorage;
+import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,6 +50,16 @@ public class GuardListener extends Guard implements Listener {
             Random random = new Random();
             double rand = random.nextDouble() * 10;
             storage.incrementSkillScore(player, SkillSet.GUARD, 1 + rand);
+        }
+    }
+
+    @EventHandler
+    public void onDefend(EntityKnockbackEvent event) {
+        if (!(event.getEntity() instanceof Player defender)) return;
+        if (event.getCause() == EntityKnockbackEvent.Cause.SHIELD_BLOCK) {
+            Random random = new Random();
+            double rand = random.nextDouble() * 10;
+            storage.incrementSkillScore(defender, SkillSet.GUARD, 1 + rand);
         }
     }
 

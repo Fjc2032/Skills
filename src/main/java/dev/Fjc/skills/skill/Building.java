@@ -2,6 +2,7 @@ package dev.Fjc.skills.skill;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
+import dev.Fjc.skills.enums.SubSkillSet;
 import dev.Fjc.skills.player.AttributeManager;
 import dev.Fjc.skills.player.SkillController;
 import dev.Fjc.skills.storage.YMLDataStorage;
@@ -9,7 +10,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+
+import java.util.UUID;
 
 /**
  * Represents the main Building skill.
@@ -26,6 +28,11 @@ public class Building implements SkillController {
         this.plugin = plugin;
         this.storage = plugin.getStorage();
         this.attributeManager = plugin.getAttributeManager();
+    }
+
+    @Override
+    public boolean enableCooldown(UUID uuid, SubSkillSet priority) {
+        return false;
     }
 
     /**

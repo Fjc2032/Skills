@@ -2,7 +2,6 @@ package dev.Fjc.skills.storage;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
-import io.papermc.paper.annotation.DoNotUse;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -10,7 +9,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

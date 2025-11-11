@@ -15,6 +15,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -59,7 +61,8 @@ public class ExplosivesTech extends Mining {
 
         if (value == 0) return;
 
-        world.createExplosion(target, (float) (value + 1), false, true, player);
+        boolean success = world.createExplosion(target, (float) (value + 1), false, true, player);
+        if (!success) this.plugin.getLogger().warning("Something went wrong while attempting to create this explosion.");
 
         //Hunger decay
         HungerManagement.modifyHungerDecayRate(plugin, player, (int) Math.max(8 - (value * 0.25), 1));
@@ -74,23 +77,31 @@ public class ExplosivesTech extends Mining {
     public void demolitionFury(BlockBreakEvent event, Consumer<Integer> callback) {
         Block initialBlock = event.getBlock();
         Player player = event.getPlayer();
-        var lambdaContext = new Object() {
-            int destroyedBlocks = 0;
-        };
+        List<Block> brokenBlocks = new ArrayList<>();
+        brokenBlocks.add(initialBlock);
+
+        long duration = (long) storage.getScore(player, SkillSet.MINING) / 10;
 
         ScheduledTask task = player.getScheduler().runAtFixedRate(this.plugin, run -> {
             for (Block block : surroundingBlocks(initialBlock)) {
                 if (!block.isEmpty()) {
                     block.breakNaturally(player.getInventory().getItemInMainHand());
-                    lambdaContext.destroyedBlocks++;
+                    brokenBlocks.add(block);
                 }
             }
-        }, null, 1L, 500L);
+        }, null, 1L, 500L + duration);
 
-        player.getScheduler().runDelayed(this.plugin, run -> {
+        player.getScheduler().runDelayed(this.plugin, end -> {
             if (task != null) task.cancel();
-            callback.accept(lambdaContext.destroyedBlocks);
-        }, null, 501L);
+            callback.accept(brokenBlocks.size());
+        }, null, Math.min(501L + duration, 1500L));
+
+        player.getScheduler().runDelayed(plugin, hunger -> {
+            int context = brokenBlocks.size();
+            HungerManagement.modifyHungerDecayRate(plugin, player, context);
+            HungerManagement.setExhaustionFromTask(event, player,  (float) context / 2);
+        }, null, Math.min(510L + duration, 1510L));
+
     }
 
 }

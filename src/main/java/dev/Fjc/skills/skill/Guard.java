@@ -2,6 +2,7 @@ package dev.Fjc.skills.skill;
 
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.enums.SkillSet;
+import dev.Fjc.skills.enums.SubSkillSet;
 import dev.Fjc.skills.player.AttributeManager;
 import dev.Fjc.skills.player.SkillController;
 import dev.Fjc.skills.skill.subskills.Unarmed;
@@ -13,10 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
 
+import java.util.UUID;
+
 /**
  * Represents the main Guard skill.
  */
-public class Guard implements SkillController, BaseFactory {
+public class Guard implements SkillController {
 
     private final YMLDataStorage storage;
 
@@ -39,6 +42,11 @@ public class Guard implements SkillController, BaseFactory {
 
     public static void factory(Skills plugin) {
         unarmed = new Unarmed(plugin);
+    }
+
+    @Override
+    public boolean enableCooldown(UUID uuid, SubSkillSet priority) {
+        return false;
     }
 
     public void reduceDamageTaken(Event event) {

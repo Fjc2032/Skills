@@ -2,6 +2,9 @@ package dev.Fjc.skills.enums;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * An iterable enum of all main Skills
+ */
 public enum SkillSet {
 
     MINING("mining"),

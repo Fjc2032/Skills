@@ -3,14 +3,13 @@ package dev.Fjc.skills.skill.subskills;
 import dev.Fjc.skills.Skills;
 import dev.Fjc.skills.skill.Mining;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents an Excavator skill, under the main Mining skill
@@ -20,6 +19,12 @@ import java.util.Objects;
  * Blitz - Blast a large line streak in one direction (initial 3x1 radius)
  */
 public class Excavator extends Mining {
+
+    /**
+     * A hard limit that the vein miner skill may NEVER pass. <br>
+     * This should prevent the server from crashing.
+     */
+    protected static final int HARD_VEIN_LIMIT = 48;
 
     public Excavator(@NotNull Skills plugin) {
         super(plugin);
@@ -38,36 +43,45 @@ public class Excavator extends Mining {
         for (Block block : blitzBlocks(event.getBlock())) block.breakNaturally();
     }
 
+    /**
+     * Gets a list of blocks that are neighbours to each other and are of the same type.
+     * @param block The initial block
+     * @return A list of blocks derived from the initial block.
+     */
     private List<Block> veinBlocks(Block block) {
-        List<Block> objects = new ArrayList<>(48);
-        World world = block.getWorld();
+        List<Block> objects = new ArrayList<>();
+        Queue<Block> queue = new LinkedList<>();
 
-        //Get coordinates of the block
-        int x = block.getX();
-        int y = block.getY();
-        int z = block.getZ();
+        Material type = block.getType();
+        objects.add(block);
+        queue.add(block);
 
-        //Use some derivatives to get the other blocks
-        for (int dx = -1; dx < 1; dx++) for (int dy = -1; dy < 1; dy++) for (int dz = -1; dz < 1; dz++) {
-            if (dx == 0 && dy == 0 && dz == 0) continue;
-            objects.add(world.getBlockAt(x + dx, y + dy, z + dz));
-        }
-        for (Block block1 : surroundingBlocks(block)) {
-            if (block1.getType() == block.getType()) objects.add(block1);
-            for (Block block2 : surroundingBlocks(block1)) {
-                if (block2.getType() == block1.getType()) objects.add(block2);
+        while (!queue.isEmpty() && objects.size() <= HARD_VEIN_LIMIT) {
+            Block current = queue.poll();
+
+            //Check all derives and add them
+            for (Block db : surroundingBlocks(current)) {
+                if (!objects.contains(db) && db.getType() == type) {
+                    objects.add(db);
+                    queue.add(db);
+                }
             }
         }
 
         return objects;
     }
 
-    private List<Block> blitzBlocks(Block block) {
+    /**
+     * Gets a list of blitzed blocks.
+     * @param block The initial block
+     * @return A list of blitzed blocks.
+     */
+    private List<Block> blitzBlocks(@NotNull Block block) {
         World world = block.getWorld();
         double yPrime = block.getLocation().getY() - 1;
         double yDoublePrime = block.getLocation().getY() + 1;
 
-        List<Block> objects = new ArrayList<>(Byte.MAX_VALUE);
+        List<Block> objects = new ArrayList<>();
 
         Location first = new Location(world, block.getX(), yPrime, block.getZ());
         Block block1 = first.getBlock();

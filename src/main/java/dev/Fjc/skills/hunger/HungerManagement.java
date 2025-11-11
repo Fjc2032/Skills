@@ -22,7 +22,7 @@ public abstract class HungerManagement {
 
     public static void setExhaustionFromTask(Event event, Player player, float exhaustion) {
         float current = player.getExhaustion();
-        if (event.callEvent()) player.setExhaustion(current + exhaustion);
+        if (event != null) player.setExhaustion(current + exhaustion);
     }
 
     /**
